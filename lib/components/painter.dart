@@ -1,28 +1,40 @@
 import 'package:flutter/material.dart';
 
-class CustomShapeClass extends CustomClipper<Path> {
+class Shape extends CustomPainter {
   @override
-  getClip(Size size) {
-    // TODO: implement getClip
-    var path = new Path();
-    path.lineTo(0, size.height / 4.25);
-    var firstControlPoint = new Offset(size.width / 4, size.height / 3);
-    var firstEndPoint = new Offset(size.width / 2, size.height / 3 - 60);
-    var secondControlPoint =
-    new Offset(size.width - (size.width / 4), size.height / 4 - 65);
-    var secondEndPoint = new Offset(size.width, size.height / 3 - 40);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
-        firstEndPoint.dx, firstEndPoint.dy);
-    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
-        secondEndPoint.dx, secondEndPoint.dy);
-    path.lineTo(size.width, size.height / 3);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
+  void paint(Canvas canvas, Size size) {
+    // Define a paint object
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..color = Colors.white;
+
+    // Left eye
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Rect.fromLTWH(20, 40, 100, 100), Radius.circular(20)),
+      paint,
+    );
+    // Right eye
+    canvas.drawOval(
+      Rect.fromLTWH(size.width - 120, 40, 100, 100),
+      paint,
+    );
+    // Mouth
+    final mouth = Path();
+    mouth.moveTo(size.width * 0.8, size.height * 0.6);
+    mouth.arcToPoint(
+      Offset(size.width * 0.2, size.height * 0.6),
+      radius: Radius.circular(150),
+    );
+    mouth.arcToPoint(
+      Offset(size.width * 0.8, size.height * 0.6),
+      radius: Radius.circular(200),
+      clockwise: false,
+    );
+
+    canvas.drawPath(mouth, paint);
   }
+
   @override
-  bool shouldReclip(CustomClipper oldClipper)
-  {
-    return true;
-  }
+  bool shouldRepaint(Shape oldDelegate) => false;
 }
